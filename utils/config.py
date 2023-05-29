@@ -1,3 +1,6 @@
+# Configuration
+# Author: Ilhan Yavuz Iskurt
+
 from pathlib import Path
 from pydantic import BaseSettings, Field
 
@@ -9,8 +12,9 @@ class Config(BaseSettings):
 
     DATA_DIR: Path = Field(
         "data", description="Path for data dir", env="DATA_DIR")
-    UNI_LIST: str = Field(
-        "uni_list.txt", description="File name for list of universities", env="UNI_LIST")
+    ILO_URL: str = Field(
+        "https://www.ilo.org/shinyapps/bulkexplorer7/",
+        description="Url of International Labor Organization's data explorer", env="ILO_URL")
 
     class Config:
         env_file = ".env"
