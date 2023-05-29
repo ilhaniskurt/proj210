@@ -10,6 +10,15 @@ from time import time, sleep
 from utils.config import config
 
 
+def data_exists(filename: str) -> bool:
+    data = Path(config.DATA_DIR)
+    matches = list(data.glob(filename + "*"))
+    if matches:
+        return True
+    else:
+        return False
+
+
 @lru_cache
 def get_abs_path() -> str:
     path = Path(config.DATA_DIR)

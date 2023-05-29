@@ -11,10 +11,14 @@ class Config(BaseSettings):
     """
 
     DATA_DIR: Path = Field(
-        "data", description="Path for data dir", env="DATA_DIR")
+        "data", description="Path for data directory", env="DATA_DIR")
+    GRAPH_DIR: Path = Field(
+        "graphs", description="Path for graphs directory", env="GRAPH_DIR")
     ILO_URL: str = Field(
         "https://www.ilo.org/shinyapps/bulkexplorer7/",
-        description="Url of International Labor Organization's data explorer", env="ILO_URL")
+        description="Url of International Labour Organization's data explorer", env="ILO_URL")
+    ILO_DATA: str = Field(
+        "TUR_A-filtered-", description="Prefix of the filename that comes from ILO", env="ILO_DATA")
 
     class Config:
         env_file = ".env"

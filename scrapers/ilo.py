@@ -14,7 +14,7 @@ from utils.config import config
 from utils.dl import get_abs_path, file_count, wait_for_download
 
 
-def run():
+def scrape():
 
     # Query for the ilo url
     query: str = "?id=TUR_A&indicator="
