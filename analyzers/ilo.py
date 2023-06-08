@@ -6,10 +6,36 @@ from pathlib import Path
 import pandas as pd
 # import numpy as np
 # import seaborn as sns
-# import matplotlib.pyplot as plt
+import matplotlib.pyplot as plt
 
 # Local imports
 from utils.config import config
+
+
+def graph1(df: pd.DataFrame):
+    df = df.drop("indicator.label", axis=1)
+    total_df: pd.DataFrame = df[df["sex.label"] == "Sex: Total"]
+
+    df_sum = total_df.groupby('classif1.label')[
+        'obs_value'].sum().reset_index()
+    top_labels = df_sum.nlargest(6, 'obs_value')['classif1.label']
+    df_top = total_df[total_df['classif1.label'].isin(top_labels)]
+
+    fig, ax = plt.subplots(figsize=(10, 6))
+    for label, group in df_top.groupby("classif1.label"):
+        label = label.replace("Country of citizenship: ", "")
+        ax.plot(group["time"], group["obs_value"], label=label)
+
+    # Set labels and title
+    ax.set_xlabel('Time')
+    ax.set_ylabel('Migration')
+    ax.set_title('Migration over Time')
+
+    # Add a legend
+    ax.legend()
+
+    # Save the plot as a file (e.g., PNG format)
+    plt.savefig(config.GRAPH_DIR / "test.png")
 
 
 def analyze():
@@ -20,6 +46,10 @@ def analyze():
 
     label_column = 'indicator.label'
 
+    # Drop irrelevant columns from DataFrame
+    df = df.drop(["ref_area.label", "source.label", "classif2.label", "obs_status.label",
+                 "note_classif.label", "note_indicator.label", "note_source.label"], axis=1)
+
     # Get unique labels from the label column
     labels = df[label_column].unique()
 
@@ -28,9 +58,5 @@ def analyze():
         label: df[df[label_column] == label] for label in labels}
 
     # Chart 1
-    df1 = sep_dfs[
-        "Inflow of working age foreign citizens by sex and country of citizenship (thousands)"]
-    print(df1.iloc[1:6].columns)
-    print(df1["time"].head())
-    # for k in sep_dfs.keys():
-    #     print(k)
+    graph1(sep_dfs[
+        "Inflow of working age foreign citizens by sex and country of citizenship (thousands)"])
