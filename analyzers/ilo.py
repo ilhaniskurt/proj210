@@ -38,6 +38,27 @@ def graph1(df: pd.DataFrame):
     plt.savefig(config.GRAPH_DIR / "test.png")
 
 
+
+
+
+def graph2(df: pd.DataFrame):
+    df = df.drop("indicator.label", axis=1)
+    
+    df = df.drop(["ref_area.label", "source.label", "classif1.label", "obs_status.label",
+                 "note_classif.label", "note_indicator.label", "note_source.label"], axis=1)
+    total_df: pd.DataFrame = df[df["sex.label"] == "Sex: Total"]
+    total_df: pd.DataFrame = df[df["classif2.label"] != "Place of birth: Total"]
+    total_df: pd.DataFrame = total_df[df["classif2.label"] != "Place of birth: Status unknown"]
+    print(total_df[0:26])
+
+
+
+
+
+
+
+
+
 def analyze():
     # Read csv
     datapath = Path(config.DATA_DIR)
@@ -46,10 +67,12 @@ def analyze():
 
     label_column = 'indicator.label'
 
+    '''
     # Drop irrelevant columns from DataFrame
     df = df.drop(["ref_area.label", "source.label", "classif2.label", "obs_status.label",
                  "note_classif.label", "note_indicator.label", "note_source.label"], axis=1)
-
+    '''
+    
     # Get unique labels from the label column
     labels = df[label_column].unique()
 
@@ -58,5 +81,8 @@ def analyze():
         label: df[df[label_column] == label] for label in labels}
 
     # Chart 1
-    graph1(sep_dfs[
-        "Inflow of working age foreign citizens by sex and country of citizenship (thousands)"])
+    #graph1(sep_dfs[
+    #    "Inflow of working age foreign citizens by sex and country of citizenship (thousands)"])
+    
+    #Chart 2
+    graph2(sep_dfs["Persons outside the labour force by sex, education and place of birth (in thousands)"])

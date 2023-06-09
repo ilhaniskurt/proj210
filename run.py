@@ -20,4 +20,4 @@ print("[ILO] Data analysis..")
 ilo_analyze()
 print("[ILO] Data analysis completed!")
 
-print("--- ILO process ended ---a")
+print("--- ILO process ended ---")
