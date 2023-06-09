@@ -41,6 +41,11 @@ def graph1(df: pd.DataFrame):
     # Save the plot as a file (e.g., PNG format)
     plt.savefig(config.GRAPH_DIR / "graph1.png")
 
+    # Clear plot
+    plt.cla()
+    plt.clf()
+    plt.close()
+
 
 def graph2(df: pd.DataFrame):
     df = df.drop("indicator.label", axis=1)
@@ -75,8 +80,13 @@ def graph2(df: pd.DataFrame):
     plt.title('Line Graph')
     plt.legend()
 
-    # Show the plot
+    # Save the plot as a file (e.g., PNG format)
     plt.savefig(config.GRAPH_DIR / "graph2.png")
+
+    # Clear plot
+    plt.cla()
+    plt.clf()
+    plt.close()
 
 
 def analyze():
