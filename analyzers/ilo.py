@@ -39,21 +39,41 @@ def graph1(df: pd.DataFrame):
 
 
 
-
+# Now it only plots for foreign
 
 def graph2(df: pd.DataFrame):
     df = df.drop("indicator.label", axis=1)
     
-    df = df.drop(["ref_area.label", "source.label", "classif1.label", "obs_status.label",
+    df = df.drop(["ref_area.label", "source.label", "obs_status.label",
                  "note_classif.label", "note_indicator.label", "note_source.label"], axis=1)
-    total_df: pd.DataFrame = df[df["sex.label"] == "Sex: Total"]
+    
     total_df: pd.DataFrame = df[df["classif2.label"] != "Place of birth: Total"]
-    total_df: pd.DataFrame = total_df[df["classif2.label"] != "Place of birth: Status unknown"]
-    print(total_df[0:26])
+    total_df = total_df[total_df["classif2.label"] != "Place of birth: Status unknown"]
+    total_df = total_df[total_df["classif1.label"] == "Education (Aggregate levels): Total"]
+    total_df = total_df[total_df["sex.label"] == "Sex: Total"]
+    
+    total_df = total_df.drop(["classif1.label", "sex.label"], axis=1)
+    
+    df_native = total_df[total_df['classif2.label'] == 'Place of birth: Native-born']
+    df_foreign = total_df[total_df['classif2.label'] == 'Place of birth: Foreign-born']
+    
+    df_sorted = df_foreign.sort_values('time')
 
+    # Reset the index of the sorted DataFrame
+    df_sorted = df_sorted.reset_index(drop=True)
 
+    
+    plt.plot(df_sorted['time'], df_sorted['obs_value'], label='Foreign')
+    
+    plt.xlabel('Time')
+    plt.ylabel('Value')
+    plt.title('Line Graph')
+    plt.legend()
 
-
+    # Show the plot
+    plt.show()
+    
+    
 
 
 
@@ -68,7 +88,7 @@ def analyze():
     label_column = 'indicator.label'
 
     '''
-    # Drop irrelevant columns from DataFrame
+    # Drop irrelevant columns from DataFrame 
     df = df.drop(["ref_area.label", "source.label", "classif2.label", "obs_status.label",
                  "note_classif.label", "note_indicator.label", "note_source.label"], axis=1)
     '''
