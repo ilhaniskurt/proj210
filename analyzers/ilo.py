@@ -119,6 +119,15 @@ def outsideOfWorkGraph(df: pd.DataFrame):
     plt.close()
 
 
+    
+def unemployment(df: pd.DataFrame):
+    print("anan")
+
+
+
+
+
+
 def analyze():
     # Read csv
     datapath = Path(config.DATA_DIR)
