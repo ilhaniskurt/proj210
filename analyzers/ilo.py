@@ -48,7 +48,7 @@ def inflowGraph(df: pd.DataFrame):
     plt.close()
 
 
-def outsideOfWorkGraph(df: pd.DataFrame):
+def classif2Line(df: pd.DataFrame):
     
     #drop the unnecessary columns
     df = df.drop(["indicator.label", "ref_area.label", "source.label", "obs_status.label",
@@ -63,16 +63,21 @@ def outsideOfWorkGraph(df: pd.DataFrame):
                         == "Education (Aggregate levels): Total"]
     total_df = total_df[total_df["sex.label"] == "Sex: Total"]
     
-    
     # drop the columns after being used for modification
     total_df = total_df.drop(["classif1.label", "sex.label"], axis=1)
     
-    # seperate df's since the values have a great difference
-    df_native = total_df[total_df['classif2.label']
-                         == 'Place of birth: Native-born']
-    df_foreign = total_df[total_df['classif2.label']
-                          == 'Place of birth: Foreign-born']
+    return total_df
 
+
+
+
+def outsideOfWorkGraph(df: pd.DataFrame):
+    
+    # seperate df's since the values have a great difference
+    df_native: pd.DataFrame = df[df['classif2.label']
+                         == 'Place of birth: Native-born']
+    df_foreign: pd.DataFrame = df[df['classif2.label']
+                          == 'Place of birth: Foreign-born']
 
     ## FOREIGNER'S PART
     
@@ -103,7 +108,6 @@ def outsideOfWorkGraph(df: pd.DataFrame):
     # Reset the index of the sorted DataFrame
     df_sorted_n = df_sorted_n.reset_index(drop=True)
 
-    
     plt.plot(df_sorted_n['time'], df_sorted_n['obs_value'])
     
     plt.xlabel('Years')
@@ -120,8 +124,56 @@ def outsideOfWorkGraph(df: pd.DataFrame):
 
 
     
-def unemployment(df: pd.DataFrame):
-    print("anan")
+def unemployment(df: pd.DataFrame): # basically does the same as the previous function, but for a different purpose
+    
+    # seperate df's since the values have a great difference
+    df_native: pd.DataFrame = df[df['classif2.label']
+                         == 'Place of birth: Native-born']
+    df_foreign: pd.DataFrame = df[df['classif2.label']
+                          == 'Place of birth: Foreign-born']
+
+    ## FOREIGNER'S PART
+    
+    df_sorted_f = df_foreign.sort_values('time')
+
+    # Reset the index of the sorted DataFrame
+    df_sorted_f = df_sorted_f.reset_index(drop=True)
+
+    
+    plt.plot(df_sorted_f['time'], df_sorted_f['obs_value'])
+    
+    plt.xlabel('Years')
+    plt.ylabel('Foreigners (in thousands)')
+    plt.title('Unemployed foreigners by years')
+
+    # Show the plot
+    plt.savefig(config.GRAPH_DIR / "UnemployedForeigners.png")
+
+    # Clear plot
+    plt.cla()
+    plt.clf()
+    plt.close()
+    
+    ## NATIVE'S PART
+    
+    df_sorted_n = df_native.sort_values('time')
+
+    # Reset the index of the sorted DataFrame
+    df_sorted_n = df_sorted_n.reset_index(drop=True)
+
+    plt.plot(df_sorted_n['time'], df_sorted_n['obs_value'])
+    
+    plt.xlabel('Years')
+    plt.ylabel('Natives (in thousands)')
+    plt.title('Unemployed natives by years')
+
+    # Show the plot
+    plt.savefig(config.GRAPH_DIR / "UnemployedNatives.png")
+
+    # Clear plot
+    plt.cla()
+    plt.clf()
+    plt.close()
 
 
 
@@ -147,6 +199,8 @@ def analyze():
     inflowGraph(sep_dfs[
         "Inflow of working age foreign citizens by sex and country of citizenship (thousands)"])
 
-    # Chart 2
-    outsideOfWorkGraph(
-        sep_dfs["Persons outside the labour force by sex, education and place of birth (in thousands)"])
+    # Charts 2 and 3
+    outsideOfWorkGraph(classif2Line(sep_dfs["Persons outside the labour force by sex, education and place of birth (in thousands)"]))
+    
+    # Charts 4 and 5
+    unemployment(classif2Line(sep_dfs["Unemployment by sex, education and place of birth (thousands)"]))
