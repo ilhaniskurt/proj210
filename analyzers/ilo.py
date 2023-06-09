@@ -12,7 +12,7 @@ import matplotlib.pyplot as plt
 from utils.config import config
 
 
-def graph1(df: pd.DataFrame):
+def inflowGraph(df: pd.DataFrame):
     df = df.drop("indicator.label", axis=1)
     total_df: pd.DataFrame = df[df["sex.label"] == "Sex: Total"]
 
@@ -39,7 +39,7 @@ def graph1(df: pd.DataFrame):
     ax.legend()
 
     # Save the plot as a file (e.g., PNG format)
-    plt.savefig(config.GRAPH_DIR / "graph1.png")
+    plt.savefig(config.GRAPH_DIR / "Inflow.png")
 
     # Clear plot
     plt.cla()
@@ -47,12 +47,13 @@ def graph1(df: pd.DataFrame):
     plt.close()
 
 
-def graph2(df: pd.DataFrame):
-    df = df.drop("indicator.label", axis=1)
-
-    df = df.drop(["ref_area.label", "source.label", "obs_status.label",
+def outsideOfWorkGraph(df: pd.DataFrame):
+    
+    #drop the unnecessary columns
+    df = df.drop(["indicator.label", "ref_area.label", "source.label", "obs_status.label",
                  "note_classif.label", "note_indicator.label", "note_source.label"], axis=1)
 
+    # modify the dataframe to reduce the rows of each year
     total_df: pd.DataFrame = df[df["classif2.label"]
                                 != "Place of birth: Total"]
     total_df = total_df[total_df["classif2.label"]
@@ -60,28 +61,56 @@ def graph2(df: pd.DataFrame):
     total_df = total_df[total_df["classif1.label"]
                         == "Education (Aggregate levels): Total"]
     total_df = total_df[total_df["sex.label"] == "Sex: Total"]
-
+    
+    
+    # drop the columns after being used for modification
     total_df = total_df.drop(["classif1.label", "sex.label"], axis=1)
-
+    
+    # seperate df's since the values have a great difference
     df_native = total_df[total_df['classif2.label']
                          == 'Place of birth: Native-born']
     df_foreign = total_df[total_df['classif2.label']
                           == 'Place of birth: Foreign-born']
 
-    df_sorted = df_foreign.sort_values('time')
+
+    ## FOREIGNER'S PART
+    
+    df_sorted_f = df_foreign.sort_values('time')
 
     # Reset the index of the sorted DataFrame
-    df_sorted = df_sorted.reset_index(drop=True)
+    df_sorted_f = df_sorted_f.reset_index(drop=True)
 
-    plt.plot(df_sorted['time'], df_sorted['obs_value'], label='Foreign')
+    
+    plt.plot(df_sorted_f['time'], df_sorted_f['obs_value'])
+    
+    plt.xlabel('Years')
+    plt.ylabel('Foreigners (in thousands)')
+    plt.title('Foreigners outside of labour force by years')
 
-    plt.xlabel('Time')
-    plt.ylabel('Value')
-    plt.title('Line Graph')
-    plt.legend()
+    # Show the plot
+    plt.savefig(config.GRAPH_DIR / "UnemployedForeigners.png")
 
-    # Save the plot as a file (e.g., PNG format)
-    plt.savefig(config.GRAPH_DIR / "graph2.png")
+    # Clear plot
+    plt.cla()
+    plt.clf()
+    plt.close()
+    
+    ## NATIVE'S PART
+    
+    df_sorted_n = df_native.sort_values('time')
+
+    # Reset the index of the sorted DataFrame
+    df_sorted_n = df_sorted_n.reset_index(drop=True)
+
+    
+    plt.plot(df_sorted_n['time'], df_sorted_n['obs_value'])
+    
+    plt.xlabel('Years')
+    plt.ylabel('Natives (in thousands)')
+    plt.title('Natives outside of labour force by years')
+
+    # Show the plot
+    plt.savefig(config.GRAPH_DIR / "UnemployedNatives.png")
 
     # Clear plot
     plt.cla()
@@ -97,10 +126,6 @@ def analyze():
 
     label_column = 'indicator.label'
 
-    # Drop irrelevant columns from DataFrame
-    # df = df.drop(["ref_area.label", "source.label", "classif2.label", "obs_status.label",
-    # "note_classif.label", "note_indicator.label", "note_source.label"], axis=1)
-
     # Get unique labels from the label column
     labels = df[label_column].unique()
 
@@ -109,9 +134,9 @@ def analyze():
         label: df[df[label_column] == label] for label in labels}
 
     # Chart 1
-    graph1(sep_dfs[
+    inflowGraph(sep_dfs[
         "Inflow of working age foreign citizens by sex and country of citizenship (thousands)"])
 
     # Chart 2
-    graph2(
+    outsideOfWorkGraph(
         sep_dfs["Persons outside the labour force by sex, education and place of birth (in thousands)"])
