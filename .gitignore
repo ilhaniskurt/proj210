@@ -1,5 +1,6 @@
-# Custom additions
+# Generated files
 data/
+graphs/
 
 # MacOS
 .DS_Store
