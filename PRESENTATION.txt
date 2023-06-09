@@ -7,7 +7,9 @@ Why are they not looking for work? --> it would be good if we can answer this so
 
 47254 --> Inflow of employed foreign citizens by sex and economic activity (thousands)
 47052 --> Inflow of employed foreign citizens by sex and occupation
-38947 --> Unemployment (alp)
+38947 --> Unemployment
+
+ALSO DO THE GRAPHS BY SEX AS WELL
 
 
 
