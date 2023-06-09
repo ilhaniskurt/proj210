@@ -1,5 +1,6 @@
 # Scraper for ilo.org
-# Author: Ilhan Yavuz Iskurt, Alp Yener
+# Graph Functions
+# Author: Ilhan Yavuz Iskurt, Alp Yener, Janset Tunca
 
 # External imports
 from pathlib import Path
@@ -32,8 +33,8 @@ def inflowGraph(df: pd.DataFrame):
 
     # Set labels and title
     ax.set_xlabel('Time')
-    ax.set_ylabel('Migration by thousand')
-    ax.set_title('Migration over Time')
+    ax.set_ylabel('Migration by thousands')
+    ax.set_title('Migration of Working Age Citizens Over Time')
 
     # Add a legend
     ax.legend()
@@ -88,7 +89,7 @@ def outsideOfWorkGraph(df: pd.DataFrame):
     plt.title('Foreigners outside of labour force by years')
 
     # Show the plot
-    plt.savefig(config.GRAPH_DIR / "UnemployedForeigners.png")
+    plt.savefig(config.GRAPH_DIR / "OutOfWorkForceForeigners.png")
 
     # Clear plot
     plt.cla()
@@ -110,7 +111,7 @@ def outsideOfWorkGraph(df: pd.DataFrame):
     plt.title('Natives outside of labour force by years')
 
     # Show the plot
-    plt.savefig(config.GRAPH_DIR / "UnemployedNatives.png")
+    plt.savefig(config.GRAPH_DIR / "OutOfWorkForceNatives.png")
 
     # Clear plot
     plt.cla()
