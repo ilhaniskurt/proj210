@@ -8,6 +8,8 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import statsmodels.api as sm
+
 
 # Local imports
 from utils.config import config
@@ -94,6 +96,9 @@ def outsideOfWorkGraph(df: pd.DataFrame):
     slopeF = coefficients[0]
     print("\nSlope of the regression for outside-of-work-force foreigners: " , slopeF)
 
+
+
+    
     
     plt.xlabel('Years')
     plt.ylabel('Foreigners (in thousands)')

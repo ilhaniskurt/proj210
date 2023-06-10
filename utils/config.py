@@ -4,7 +4,6 @@
 from pathlib import Path
 from pydantic import BaseSettings, Field
 
-
 class Config(BaseSettings):
     """
     A configuration class that loads variables from a .env file or uses default values.
