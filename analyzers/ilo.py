@@ -8,8 +8,6 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-import statsmodels.api as sm
-
 
 # Local imports
 from utils.config import config
@@ -97,9 +95,6 @@ def outsideOfWorkGraph(df: pd.DataFrame):
     print("\nSlope of the regression for outside-of-work-force foreigners: " , slopeF)
 
 
-
-    
-    
     plt.xlabel('Years')
     plt.ylabel('Foreigners (in thousands)')
     plt.title('Foreigners outside of labour force by years')
@@ -195,7 +190,7 @@ def unemployment(df: pd.DataFrame): # basically does the same as the previous fu
 
 
 
-def unemployment_heat_education(df: pd.DataFrame): # Unemployment by sex, education and place of birth (thousands)
+def unemployment_heat_education(df: pd.DataFrame):
 
     #drop the unnecessary columns
     total_df: pd.DataFrame = df.drop(["indicator.label", "ref_area.label", "source.label", "obs_status.label",
@@ -213,6 +208,7 @@ def unemployment_heat_education(df: pd.DataFrame): # Unemployment by sex, educat
     # drop the columns after being used for modification
     total_df = total_df.drop(["sex.label", "classif2.label"], axis=1)
     
+    # modify the colummns in a more presentable way
     total_df['classif1.label'] = total_df['classif1.label'].replace('Education (Aggregate levels): Advanced', 'Advanced')
     total_df['classif1.label'] = total_df['classif1.label'].replace('Education (Aggregate levels): Intermediate', 'Intermediate')
     total_df['classif1.label'] = total_df['classif1.label'].replace('Education (Aggregate levels): Basic', 'Basic')
@@ -265,5 +261,5 @@ def analyze():
     # Charts 4 and 5
     unemployment(classif2Line(sep_dfs["Unemployment by sex, education and place of birth (thousands)"]))
     
-    # Heatmap 1
+    # Heatmap
     unemployment_heat_education(sep_dfs["Unemployment by sex, education and place of birth (thousands)"])
