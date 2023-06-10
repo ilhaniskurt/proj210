@@ -4,17 +4,9 @@ outside of work force graphs can be next to each other
 Why are they not looking for work? --> it would be good if we can answer this somehow
 
 
-
-47254 --> Inflow of employed foreign citizens by sex and economic activity (thousands)
-47052 --> Inflow of employed foreign citizens by sex and occupation
-38947 --> Unemployment
-
 ALSO DO THE GRAPHS BY SEX AS WELL
-
- 1 - look for inflow of immigrants and do they work or not (unemployment)
- 2 - look if the working ones are educated well or not - heatmaps or something else
  3 - look at the inflow of immigrants and their economic activity (what do they do) - heatmaps or something else
+    47254 --> Inflow of employed foreign citizens by sex and economic activity (thousands)
+    47052 --> Inflow of employed foreign citizens by sex and occupation
+
  4 - look for news / twitter etc for their disruption on socioeconomy
-
-
- ALSO calculate regression etc

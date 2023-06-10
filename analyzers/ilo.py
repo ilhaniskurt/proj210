@@ -5,8 +5,8 @@
 # External imports
 from pathlib import Path
 import pandas as pd
-# import numpy as np
-# import seaborn as sns
+import numpy as np
+import seaborn as sns
 import matplotlib.pyplot as plt
 
 # Local imports
@@ -89,6 +89,12 @@ def outsideOfWorkGraph(df: pd.DataFrame):
     
     plt.plot(df_sorted_f['time'], df_sorted_f['obs_value'])
     
+    # calculate the linear regression, the slope will give us approximately how much increase there is
+    coefficients = np.polyfit(df_sorted_f['time'], df_sorted_f['obs_value'], 1)
+    slopeF = coefficients[0]
+    print("\nSlope of the regression for outside-of-work-force foreigners: " , slopeF)
+
+    
     plt.xlabel('Years')
     plt.ylabel('Foreigners (in thousands)')
     plt.title('Foreigners outside of labour force by years')
@@ -109,6 +115,7 @@ def outsideOfWorkGraph(df: pd.DataFrame):
     df_sorted_n = df_sorted_n.reset_index(drop=True)
 
     plt.plot(df_sorted_n['time'], df_sorted_n['obs_value'])
+    
     
     plt.xlabel('Years')
     plt.ylabel('Natives (in thousands)')
@@ -141,6 +148,12 @@ def unemployment(df: pd.DataFrame): # basically does the same as the previous fu
 
     
     plt.plot(df_sorted_f['time'], df_sorted_f['obs_value'])
+    
+    # calculate the linear regression, the slope will give us approximately how much increase there is
+    coefficients = np.polyfit(df_sorted_f['time'], df_sorted_f['obs_value'], 1)
+    slopeF = coefficients[0]
+    print("Slope of the regression for unemployed foreigners: " , slopeF, "\n")
+    
     
     plt.xlabel('Years')
     plt.ylabel('Foreigners (in thousands)')
@@ -177,6 +190,48 @@ def unemployment(df: pd.DataFrame): # basically does the same as the previous fu
 
 
 
+def unemployment_heat_education(df: pd.DataFrame): # Unemployment by sex, education and place of birth (thousands)
+
+    #drop the unnecessary columns
+    total_df: pd.DataFrame = df.drop(["indicator.label", "ref_area.label", "source.label", "obs_status.label",
+                 "note_classif.label", "note_indicator.label", "note_source.label"], axis=1)
+
+    total_df = df[df["classif2.label"]
+                                == "Place of birth: Foreign-born"]
+    total_df = total_df[total_df["classif2.label"]
+                        != "Place of birth: Status unknown"]
+    
+    total_df = total_df[total_df["classif1.label"]
+                        != "Education (Aggregate levels): Total"]
+    total_df = total_df[total_df["sex.label"] == "Sex: Total"]
+    
+    # drop the columns after being used for modification
+    total_df = total_df.drop(["sex.label", "classif2.label"], axis=1)
+    
+    total_df['classif1.label'] = total_df['classif1.label'].replace('Education (Aggregate levels): Advanced', 'Advanced')
+    total_df['classif1.label'] = total_df['classif1.label'].replace('Education (Aggregate levels): Intermediate', 'Intermediate')
+    total_df['classif1.label'] = total_df['classif1.label'].replace('Education (Aggregate levels): Basic', 'Basic')
+    total_df['classif1.label'] = total_df['classif1.label'].replace('Education (Aggregate levels): Less than basic', 'Less than basic')
+    
+    pivot_table = total_df.pivot_table(index='classif1.label', columns='time', values='obs_value')
+    pivot_table = pivot_table.reindex(["Advanced", "Intermediate", "Basic", "Less than basic"])
+
+
+    # Create the heatmap using seaborn
+    sns.heatmap(pivot_table, annot=True, cmap='YlGnBu')
+
+    # Add labels and title
+    plt.xlabel('Year')
+    plt.ylabel('Foreigners (thousands)')
+    plt.title('Unemployment of foreigners by education')
+
+    # Show the plot
+    plt.savefig(config.GRAPH_DIR / "UnemployedForeignersHeatmap.png")
+
+    # Clear plot
+    plt.cla()
+    plt.clf()
+    plt.close()
 
 
 
@@ -204,3 +259,6 @@ def analyze():
     
     # Charts 4 and 5
     unemployment(classif2Line(sep_dfs["Unemployment by sex, education and place of birth (thousands)"]))
+    
+    # Heatmap 1
+    unemployment_heat_education(sep_dfs["Unemployment by sex, education and place of birth (thousands)"])
