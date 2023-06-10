@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
+import textwrap
 
 # Local imports
 from utils.config import config
@@ -231,6 +232,91 @@ def unemployment_heat_education(df: pd.DataFrame):
     plt.close()
 
 
+def foreigner_occupation(df: pd.DataFrame):
+    total_df: pd.DataFrame = df.drop([
+        "indicator.label", "ref_area.label", "source.label",
+        "obs_status.label", "note_classif.label", "note_indicator.label",
+        "note_source.label"], axis=1)
+
+    total_df = total_df[total_df["classif1.label"]
+                        != "Occupation (Skill level): Not elsewhere classified"]
+
+    total_df = total_df[total_df["classif1.label"]
+                        != "Occupation (Skill level): Total"]
+
+    total_df = total_df[total_df["classif1.label"]
+                        != "Occupation (Skill level): Total"]
+
+    total_df = total_df[total_df["classif1.label"]
+                        != "Occupation (ISCO-08): Total"]
+
+    total_df = total_df[total_df["classif1.label"]
+                        != "Occupation (Skill level): Skill level 1 ~ low"]
+
+    total_df = total_df[total_df["classif1.label"]
+                        != "Occupation (Skill level): Skill levels 3 and 4 ~ high"]
+
+    total_df = total_df[total_df["classif1.label"]
+                        != "Occupation (Skill level): Skill level 2 ~ medium"]
+
+    total_df = total_df[total_df["classif1.label"]
+                        != "Occupation (ISCO-08): X. Not elsewhere classified"]
+
+    occupation_data = total_df.groupby(['classif1.label', 'sex.label'])[
+        'obs_value'].sum().unstack().reset_index()
+
+    occupation_data['classif1.label'] = occupation_data['classif1.label'].replace({
+        'Occupation (ISCO-08): 1. Managers': 'Managers',
+        'Occupation (ISCO-08): 2. Professionals': 'Professionals',
+        'Occupation (ISCO-08): 3. Technicians and associate professionals': 'Technicians',
+        'Occupation (ISCO-08): 4. Clerical support workers': 'Clerical Support Workers',
+        'Occupation (ISCO-08): 5. Service and sales workers': 'Service and Sales Workers',
+        'Occupation (ISCO-08): 6. Skilled agricultural, forestry and fishery workers':
+        'Agricultural, Forestry and Fishery',
+        'Occupation (ISCO-08): 7. Craft and related trades workers':
+        'Craft and Related Trades Workers',
+        'Occupation (ISCO-08): 8. Plant and machine operators, and assemblers':
+        'Plant and Machine Operators',
+        'Occupation (ISCO-08): 9. Elementary occupations': 'Elementary Occupations',
+        'Occupation (ISCO-08): 0. Armed forces occupations': 'Armed Forces'
+    })
+
+    occupation_data['Sex: Total'] = occupation_data['Sex: Female'] + \
+        occupation_data['Sex: Male']
+    plt.figure(figsize=(40, 30))
+    bar_width = 0.25
+    index = range(len(occupation_data))
+
+    plt.bar(index, occupation_data['Sex: Female'], bar_width, label='Female')
+    plt.bar([i + bar_width for i in index],
+            occupation_data['Sex: Male'], bar_width, label='Male')
+    plt.bar([i + 2 * bar_width for i in index],
+            occupation_data['Sex: Total'], bar_width, label='Total')
+
+    max_value = int(
+        occupation_data[['Sex: Female', 'Sex: Male', 'Sex: Total']].max().max())
+    step_size = max_value // 10  # Adjust the number of intervals as needed
+    plt.yticks(range(0, max_value + step_size, step_size), fontsize=30)
+    plt.xticks([i + bar_width for i in index],
+               occupation_data['classif1.label'], fontsize=30)
+
+    wrapped_labels = [textwrap.fill(label, 13)
+                      for label in occupation_data["classif1.label"]]
+    plt.gca().set_xticklabels(wrapped_labels)
+    # Show the plot
+    plt.xlabel('Occupation', fontsize=40)
+    plt.ylabel('Number of Foreigners', fontsize=40)
+    plt.title('Foreigners by Occupation and Gender', fontsize=50)
+    plt.legend(fontsize=30)
+
+    plt.savefig(config.GRAPH_DIR / "foreigner_occupation.png")
+
+    # Clear plot
+    plt.cla()
+    plt.clf()
+    plt.close()
+
+
 def analyze():
     # Read csv
     datapath = Path(config.DATA_DIR)
@@ -263,3 +349,6 @@ def analyze():
     # Heatmap
     unemployment_heat_education(
         sep_dfs["Unemployment by sex, education and place of birth (thousands)"])
+
+    foreigner_occupation(
+        sep_dfs["Inflow of employed foreign citizens by sex and occupation (thousands)"])
