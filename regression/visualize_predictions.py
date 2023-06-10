@@ -22,18 +22,31 @@ filtered_df1 = df_actual[df_actual['Country'].isin(countries_df2)]
 merged_df = pd.concat([filtered_df1, df_2023])
 merged_df.to_csv("out.csv")
 
+
 # Sort the dataframe by country and date
 merged_df = merged_df.sort_values(['Country', 'Date']).reset_index(drop=True)
 
-# Plot a line for each country
+# Calculate the ranking for each country
+ranking_df = merged_df.groupby('Country')['Sales'].sum().sort_values(ascending=False).reset_index()
+ranking_df['Rank'] = ranking_df.index + 1
+ranking_dict = ranking_df.set_index('Country')['Rank'].to_dict()
+
+
+# Get the top 12 countries
+top_countries = ranking_df.head(12)['Country'].tolist()
+
+# Filter the merged_df to keep only the top 12 countries
+merged_df_top = merged_df[merged_df['Country'].isin(top_countries)]
+
+# Plot a line for each country with ranking on the legend
 plt.figure(figsize=(12, 8))
 
-for country, group in merged_df.groupby('Country'):
-    plt.plot(group['Date'], group['Sales'], label=country)
+for country, group in merged_df_top.groupby('Country'):
+    plt.plot(group['Date'], group['Sales'], label=f"{country} (Rank {ranking_dict[country]})")
 
 plt.xlabel('Date')
 plt.ylabel('Sales')
-plt.title('Property sales by year and month by Country')
+plt.title('Property sales to foreigners in Tukiye 2015-2023')
 plt.legend()
 plt.axvline(pd.to_datetime('2023'), color='r', linestyle='--', label='2023')
 plt.xticks(rotation=45)
