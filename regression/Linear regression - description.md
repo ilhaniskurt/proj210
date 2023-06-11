@@ -1,6 +1,6 @@
 Decision tree regression - description
 Steps:
-1)Loaded raw dataset from https://www.imtilak.net/en/turkey/news/realestate-sales-statistics-turkey-2022
+1)Loaded raw dataset from https://data.tuik.gov.tr/Bulten/Index?p=House-Sales-Statistics-April-2023-49520&dil=2
 2)Manually transformed(the file looked like a pdf before that), save to file "property_raw_table.csv"
 3)Run preprocess_property_data.py
 4)Run melt_data_and_plot.py

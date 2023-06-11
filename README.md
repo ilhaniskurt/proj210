@@ -14,8 +14,8 @@
 - **International Labour Organization**:
   https://www.ilo.org/shinyapps/bulkexplorer7/?lang=en&id=TUR_A
 
-- **Imtilak Real Estate**:
-  https://www.imtilak.net/en/turkey/news/realestate-sales-statistics-turkey-2022
+- **TUIK**:
+  https://data.tuik.gov.tr/Bulten/Index?p=House-Sales-Statistics-April-2023-49520&dil=2
 
 ## Setup
 
